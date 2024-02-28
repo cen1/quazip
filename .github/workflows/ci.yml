@@ -13,16 +13,15 @@ env:
 
 jobs:
 
-  build:
+  ubuntu:
     runs-on: ubuntu-${{ matrix.ubuntu_version }}
-    name: Ubuntu-${{ matrix.ubuntu_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
+    name: Ubuntu-${{ matrix.ubuntu_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}-use-qt-zlib-${{ matrix.use_qt_zlib }}
     strategy:
       fail-fast: false
       matrix:
         ubuntu_version: [20.04, 22.04]
         qt_version: [5.12.12, 5.15.2, 6.4.0, 6.6.1]
         shared: [ON, OFF]
-        use_qt_zlib: [ON, OFF]
 
     steps:
     - name: Checkout
@@ -62,6 +61,39 @@ jobs:
     - name: Run tests
       working-directory: ${{github.workspace}}/build
       run: "ctest --verbose"
+
+  use-qt-zlib:
+    runs-on: ubuntu-22.04
+    name: Qt-${{ matrix.qt_version }}-use-qt-zlib-${{ matrix.use_qt_zlib }}
+    strategy:
+      fail-fast: true
+      matrix:
+        qt_version: [ 6.4.0, 6.6.1 ]
+        use_qt_zlib: [ ON, OFF ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt6
+        if: "startsWith(matrix.qt_version, '6.')"
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ matrix.qt_version }}
+          cache: 'true'
+          cache-key-prefix: ${{ runner.os }}-Qt-Cache-${{ matrix.qt_version }}
+          dir: ${{ github.workspace }}/Qt
+          modules: 'qt5compat'
+
+      - name: Configure CMake
+        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build"
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Run tests
+        working-directory: ${{github.workspace}}/build
+        run: "ctest --verbose"
 
   macos:
     runs-on: macos-${{ matrix.macos_version }}
