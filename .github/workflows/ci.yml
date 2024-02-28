@@ -90,7 +90,7 @@ jobs:
       - name: Configure CMake
         run: |
           OUT=$(cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build")
-          echo "CMAKE_OUTPUT=$OUT" >> "$GITHUB_OUTPUT"
+          echo "CMAKE_OUTPUT<<$OUT" >> "$GITHUB_OUTPUT"
         id: cmake
 
       - name: Fail if specific text is found
