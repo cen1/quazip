@@ -95,6 +95,9 @@ jobs:
           echo 'EOF' >> $GITHUB_OUTPUT
         id: cmake
 
+      - name: Print out
+        run: echo ${{ steps.cmake.outputs.CMAKE_OUTPUT }}
+
       - name: Fail if specific text is found
         if: contains(${{ steps.cmake.outputs.CMAKE_OUTPUT }}, 'Failed to find optional Qt component')
         run: exit 1
