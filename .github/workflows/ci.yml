@@ -92,7 +92,7 @@ jobs:
         id: cmake
 
       - name: Fail if specific text is found
-        if: $contains(steps.cmake.outputs.stdout, 'Failed to find optional Qt component')
+        if: contains(steps.cmake.outputs.stdout, 'Failed to find optional Qt component')
         run: exit 1
 
       - name: Build
