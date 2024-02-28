@@ -87,12 +87,13 @@ jobs:
           dir: ${{ github.workspace }}/Qt
           modules: 'qt5compat'
 
-      - name: Remove system zlib which appears to be preinstalled or pulled by Qt action
-        if: matrix.use_qt_zlib == 'ON'
-        run: sudo apt-get -y remove zlib1g
-
       - name: Configure CMake
         run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build"
+        id: cmake
+
+      - name: Fail if Qt zlib is not found
+        if: steps.cmake.outputs.stdout contains 'Failed to find optional Qt component'
+        run: exit 1
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
