@@ -14,6 +14,7 @@ env:
 jobs:
 
   ubuntu:
+    if: true
     runs-on: ubuntu-${{ matrix.ubuntu_version }}
     name: Ubuntu-${{ matrix.ubuntu_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}-use-qt-zlib-${{ matrix.use_qt_zlib }}
     strategy:
@@ -63,6 +64,7 @@ jobs:
       run: "ctest --verbose"
 
   use-qt-zlib:
+    if: true
     runs-on: ubuntu-22.04
     name: Qt-${{ matrix.qt_version }}-use-qt-zlib-${{ matrix.use_qt_zlib }}
     strategy:
@@ -85,6 +87,10 @@ jobs:
           dir: ${{ github.workspace }}/Qt
           modules: 'qt5compat'
 
+      - name: Remove system zlib which appears to be preinstalled or pulled by Qt action
+        if: matrix.use_qt_zlib == 'ON'
+        run: sudo apt-get -y remove zlib1g
+
       - name: Configure CMake
         run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build"
 
@@ -96,6 +102,7 @@ jobs:
         run: "ctest --verbose"
 
   macos:
+    if: true
     runs-on: macos-${{ matrix.macos_version }}
     name: macos-${{ matrix.macos_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
     strategy:
