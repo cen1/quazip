@@ -68,7 +68,7 @@ jobs:
     runs-on: ubuntu-22.04
     name: Qt-${{ matrix.qt_version }}-use-qt-zlib-${{ matrix.use_qt_zlib }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         qt_version: [ 6.4.0, 6.6.1 ]
         use_qt_zlib: [ ON, OFF ]
@@ -88,7 +88,7 @@ jobs:
           modules: 'qt5compat'
 
       - name: Configure CMake
-        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build")
+        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
