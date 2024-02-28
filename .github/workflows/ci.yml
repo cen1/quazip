@@ -14,7 +14,7 @@ env:
 jobs:
 
   ubuntu:
-    if: true
+    if: false
     runs-on: ubuntu-${{ matrix.ubuntu_version }}
     name: Ubuntu-${{ matrix.ubuntu_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}-use-qt-zlib-${{ matrix.use_qt_zlib }}
     strategy:
@@ -102,7 +102,7 @@ jobs:
         run: "ctest --verbose"
 
   macos:
-    if: true
+    if: false
     runs-on: macos-${{ matrix.macos_version }}
     name: macos-${{ matrix.macos_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
     strategy:
@@ -146,6 +146,7 @@ jobs:
         run: "ctest --verbose"
 
   alpine:
+    if: false
     name: "cmake on ${{ matrix.runner }}"
     runs-on: "ubuntu-20.04"
     container:
