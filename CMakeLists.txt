@@ -111,6 +111,8 @@ if(QUAZIP_USE_QT_ZLIB)
     if(Qt${QUAZIP_QT_MAJOR_VERSION}${QUAZIP_QT_ZLIB_COMPONENT}_FOUND)
         set(QUAZIP_LIB_LIBRARIES ${QUAZIP_LIB_LIBRARIES} Qt${QUAZIP_QT_MAJOR_VERSION}::${QUAZIP_QT_ZLIB_COMPONENT})
         set(QUAZIP_QT_ZLIB_USED ON)
+    else()
+        message(FATAL_ERROR "QUAZIP_USE_QT_ZLIB was set but bundled zlib was not found. Terminating to prevent accidental linking to system libraries.")
     endif()
 endif()
 
