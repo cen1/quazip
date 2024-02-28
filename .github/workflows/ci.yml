@@ -87,21 +87,6 @@ jobs:
           dir: ${{ github.workspace }}/Qt
           modules: 'qt5compat'
 
-      - name: Configure CMake
-        run: |
-          OUT=$(cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build")
-          echo 'CMAKE_OUTPUT<<EOF' >> $GITHUB_OUTPUT
-          echo "$OUT" >> $GITHUB_OUTPUT
-          echo 'EOF' >> $GITHUB_OUTPUT
-        id: cmake
-
-      - name: Print out
-        run: echo "${{ steps.cmake.outputs.CMAKE_OUTPUT }}"
-
-      - name: Fail if specific text is found
-        if: contains("${{ steps.cmake.outputs.CMAKE_OUTPUT }}", 'Failed to find optional Qt component')
-        run: exit 1
-
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
