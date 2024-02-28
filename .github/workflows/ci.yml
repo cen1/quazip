@@ -91,8 +91,8 @@ jobs:
         run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build"
         id: cmake
 
-      - name: Fail if Qt zlib is not found
-        if: steps.cmake.outputs.stdout contains 'Failed to find optional Qt component'
+      - name: Fail if specific text is found
+        if: $contains(steps.cmake.outputs.stdout, 'Failed to find optional Qt component')
         run: exit 1
 
       - name: Build
