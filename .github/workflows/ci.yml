@@ -66,31 +66,19 @@ jobs:
   use-qt-zlib:
     if: true
     runs-on: ubuntu-22.04
-    name: Qt-${{ matrix.qt_version }}-use-qt-zlib-${{ matrix.use_qt_zlib }}
+    name: Qt-${{ matrix.qt_version }}
+    container: ghcr.io/cen1/qt:${{ matrix.qt_version }}
     strategy:
       fail-fast: false
       matrix:
-        qt_version: [ 6.4.0, 6.6.1 ]
-        use_qt_zlib: [ ON, OFF ]
+        qt_version: [ 6.4.0, 6.6.2 ]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Qt6
-        uses: jurplel/install-qt-action@v3
-        with:
-          version: ${{ matrix.qt_version }}
-          cache: 'true'
-          cache-key-prefix: ${{ runner.os }}-Qt-Cache-${{ matrix.qt_version }}
-          dir: ${{ github.workspace }}/Qt
-          modules: 'qt5compat'
-
-      - name: Check libs
-        run: ls -la ${{ github.workspace }}/Qt/Qt/${{ matrix.qt_version }}/gcc_64/lib
-
       - name: Configure CMake
-        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_QT_MAJOR_VERSION=6 -DQUAZIP_USE_QT_ZLIB=${{ matrix.use_qt_zlib }} -B "${{github.workspace}}/build"
+        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_QT_MAJOR_VERSION=6 -DQUAZIP_USE_QT_ZLIB=ON -DQUAZIP_USE_QT_ZLIB=ON -DCMAKE_PREFIX_PATH="/usr/local/Qt-${{ matrix.qt_version }}" -B "${{github.workspace}}/build"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
