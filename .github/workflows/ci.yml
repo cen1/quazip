@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         ubuntu_version: [20.04, 22.04]
-        qt_version: [5.12.12, 5.15.2, 6.4.0, 6.6.1]
+        qt_version: [5.15.12, 5.15.2, 6.4.0, 6.6.1]
         shared: [ON, OFF]
 
     steps:
@@ -72,7 +72,7 @@ jobs:
       fail-fast: false
       matrix:
         enable_tests: [ ON, OFF ]
-        qt_version: [ 5.15.12, 6.4.0, 6.6.2 ]
+        qt_version: [ 5.15.12, 6.4.3, 6.6.2 ]
 
     steps:
       - name: Checkout
@@ -97,7 +97,7 @@ jobs:
       fail-fast: false
       matrix:
         macos_version: [11, 12]
-        qt_version: [5.15.2, 6.4.0]
+        qt_version: [5.15.12, 6.4.0]
         shared: [ON, OFF]
 
     steps:

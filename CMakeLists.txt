@@ -75,14 +75,12 @@ if(QUAZIP_QT_MAJOR_VERSION EQUAL 6)
 	find_package(Qt6 REQUIRED COMPONENTS Core Core5Compat
                          OPTIONAL_COMPONENTS Network Test)
   message(STATUS "Found Qt version ${Qt6_VERSION} at ${Qt6_DIR}")
-  # Name of the Zlib component has been changed in 6.3.1, and again in 6.6.1...
-  if((Qt6_VERSION VERSION_GREATER_EQUAL "6.3.1") AND (Qt6_VERSION VERSION_LESS "6.6.1"))
-    set(QUAZIP_QT_ZLIB_COMPONENT BundledZLIB)
-  elseif(Qt6_VERSION VERSION_GREATER_EQUAL "6.6.1")
+  # Name of the Zlib component appears to be ZlibPrivate, tested Qt versions 6.3.1 to 6.6.2
+  # BundledZLIB fails with: Failed to find Qt component "BundledZLIB". Expected Config file at
+  # "/path/to/Qt6/qtbase/lib/cmake/Qt6BundledZLIB/Qt6BundledZLIBConfig.cmake" does NOT exist
+  if((Qt6_VERSION VERSION_GREATER_EQUAL "6.3.1"))
     set(QUAZIP_QT_ZLIB_COMPONENT ZlibPrivate)
-    # ZlibPrivate seems to expose zlib headers only so tests fail to link.
-    # Assuming this is deliberate by Qt to make it even harder to use the Qt zlib which they heavily recommend against.
-    # We could write a custom Find module for CMake to find the static library but this is an uphill battle at this point.
+    # ZlibPrivate seems to expose headers only so tests fail to link.
     set(QUAZIP_QT_ZLIB_COMPONENT_INCOMPATIBLE_TESTS ON)
   else()
     set(QUAZIP_QT_ZLIB_COMPONENT Zlib)
@@ -216,7 +214,7 @@ add_subdirectory(quazip)
 
 if(QUAZIP_ENABLE_TESTS)
     if(QUAZIP_QT_ZLIB_COMPONENT_INCOMPATIBLE_TESTS)
-        message(FATAL "QUAZIP_ENABLE_TESTS with QUAZIP_USE_QT_ZLIB is incompatible with this Qt version. You need to provide system zlib.")
+        message(FATAL_ERROR "QUAZIP_ENABLE_TESTS with QUAZIP_USE_QT_ZLIB is incompatible with this Qt version. You need to provide system zlib.")
     endif()
     message(STATUS "Building QuaZip tests")
     enable_testing()
