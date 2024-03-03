@@ -80,6 +80,10 @@ if(QUAZIP_QT_MAJOR_VERSION EQUAL 6)
     set(QUAZIP_QT_ZLIB_COMPONENT BundledZLIB)
   elseif(Qt6_VERSION VERSION_GREATER_EQUAL "6.6.1")
     set(QUAZIP_QT_ZLIB_COMPONENT ZlibPrivate)
+    # ZlibPrivate seems to expose zlib headers only so tests fail to link.
+    # Assuming this is deliberate by Qt to make it even harder to use the Qt zlib which they heavily recommend against.
+    # We could write a custom Find module for CMake to find the static library but this is an uphill battle at this point.
+    set(QUAZIP_QT_ZLIB_COMPONENT_INCOMPATIBLE_TESTS ON)
   else()
     set(QUAZIP_QT_ZLIB_COMPONENT Zlib)
   endif()
@@ -211,9 +215,9 @@ endif()
 add_subdirectory(quazip)
 
 if(QUAZIP_ENABLE_TESTS)
-    #if(QUAZIP_QT_ZLIB_USED)
-    #    message(FATAL "QUAZIP_ENABLE_TESTS with QUAZIP_USE_QT_ZLIB is incompatible. ${QUAZIP_QT_ZLIB_COMPONENT} component only exposes headers through CMake.")
-    #endif()
+    if(QUAZIP_QT_ZLIB_COMPONENT_INCOMPATIBLE_TESTS)
+        message(FATAL "QUAZIP_ENABLE_TESTS with QUAZIP_USE_QT_ZLIB is incompatible with this Qt version. You need to provide system zlib.")
+    endif()
     message(STATUS "Building QuaZip tests")
     enable_testing()
     add_subdirectory(qztest)

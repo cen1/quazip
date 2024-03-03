@@ -66,7 +66,7 @@ jobs:
   use-qt-zlib:
     if: true
     runs-on: ubuntu-22.04
-    name: Qt-${{ matrix.qt_version }}
+    name: Qt-${{ matrix.qt_version }}-tests-${{ matrix.enable_tests }}
     container: ghcr.io/cen1/qt:${{ matrix.qt_version }}
     strategy:
       fail-fast: false
