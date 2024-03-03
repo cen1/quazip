@@ -79,10 +79,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure CMake
-        if: matrix.enable_tests == 'ON'
+        if: matrix.enable_tests == 'ON' && startsWith(matrix.qt_version, '6')
         continue-on-error: true
         run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=${{ matrix.enable_tests }} -DQUAZIP_USE_QT_ZLIB=ON -DCMAKE_PREFIX_PATH="/usr/local/Qt-${{ matrix.qt_version }}" -B "${{github.workspace}}/build"
-        id: cmake_tests_on
+        id: qt6_cmake_tests_on
+
+      - name: Configure CMake
+        if: matrix.enable_tests == 'ON' && startsWith(matrix.qt_version, '5')
+        continue-on-error: false
+        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_ENABLE_TESTS=${{ matrix.enable_tests }} -DQUAZIP_USE_QT_ZLIB=ON -DCMAKE_PREFIX_PATH="/usr/local/Qt-${{ matrix.qt_version }}" -B "${{github.workspace}}/build"
+        id: qt5_cmake_tests_on
 
       - name: Configure CMake
         if: matrix.enable_tests == 'OFF'
@@ -90,7 +96,7 @@ jobs:
         id: cmake_tests_off
 
       - name: Build
-        if: steps.cmake_tests_off.outcome == 'success'
+        if: steps.cmake_tests_off.outcome == 'success' || steps.qt5_cmake_tests_on.outcome == 'success'
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
   macos:
