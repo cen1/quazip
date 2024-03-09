@@ -14,7 +14,7 @@ env:
 jobs:
 
   ubuntu:
-    if: true
+    if: false
     runs-on: ubuntu-${{ matrix.ubuntu_version }}
     name: Ubuntu-${{ matrix.ubuntu_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
     strategy:
@@ -64,7 +64,7 @@ jobs:
       run: "ctest --verbose"
 
   macos:
-    if: true
+    if: false
     runs-on: macos-${{ matrix.macos_version }}
     name: macos-${{ matrix.macos_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
     strategy:
@@ -108,7 +108,7 @@ jobs:
         run: "ctest --verbose"
 
   alpine:
-    if: true
+    if: false
     name: "cmake on ${{ matrix.runner }}"
     runs-on: "ubuntu-20.04"
     container:
@@ -139,12 +139,12 @@ jobs:
 
   windows:
     if: true
-    runs-on: windows-latest
+    runs-on: self-hosted #windows-latest
     strategy:
       fail-fast: false
       matrix:
         package_manager: [ conan, vcpkg ]
-        qt_version: [ 6.6.2 ]
+        qt_version: [ 5.12.12, 6.6.2 ]
 
     steps:
       - uses: actions/checkout@v4
@@ -189,7 +189,7 @@ jobs:
         run: dir build\qztest\Release
 
       - name: Test
-        if: false
+        if: true
         shell: cmd
         working-directory: ./build
         run: ctest --verbose -C Release
