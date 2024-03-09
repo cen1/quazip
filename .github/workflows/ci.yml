@@ -150,6 +150,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Qt6
+        if: "startsWith(matrix.qt_version, '6.')"
         uses: jurplel/install-qt-action@v3
         with:
           version: ${{ matrix.qt_version }}
@@ -157,6 +158,15 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-Qt-Cache-${{ matrix.qt_version }}
           dir: ${{ github.workspace }}/Qt
           modules: 'qt5compat'
+
+      - name: Install Qt5
+        if: "startsWith(matrix.qt_version, '5.')"
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ matrix.qt_version }}
+          cache: 'true'
+          cache-key-prefix: ${{ runner.os }}-Qt-Cache-${{ matrix.qt_version }}
+          dir: ${{ github.workspace }}/Qt
 
       - uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
