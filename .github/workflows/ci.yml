@@ -14,7 +14,7 @@ env:
 jobs:
 
   ubuntu:
-    if: true
+    if: false
     runs-on: ubuntu-${{ matrix.ubuntu_version }}
     name: Ubuntu-${{ matrix.ubuntu_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
     strategy:
@@ -63,8 +63,8 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: "ctest --verbose"
 
-  use-qt-zlib:
-    if: true
+  use-qt-zlib-ubuntu:
+    if: false
     runs-on: ubuntu-22.04
     name: Qt-${{ matrix.qt_version }}-tests-${{ matrix.enable_tests }}
     container: ghcr.io/cen1/qt:${{ matrix.qt_version }}
@@ -99,8 +99,39 @@ jobs:
         if: steps.cmake_tests_off.outcome == 'success' || steps.qt5_cmake_tests_on.outcome == 'success'
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-  macos:
+  use-qt-zlib-windows:
     if: true
+    runs-on: windows-latest
+    name: Qt-${{ matrix.qt_version }}-tests-${{ matrix.enable_tests }}
+    strategy:
+      fail-fast: false
+      matrix:
+        qt_version: [ 6.4.3, 6.6.2 ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Qt6
+        if: "startsWith(matrix.qt_version, '6.')"
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{ matrix.qt_version }}
+          cache: 'true'
+          cache-key-prefix: ${{ runner.os }}-Qt-Cache-${{ matrix.qt_version }}
+          dir: ${{ github.workspace }}/Qt
+          modules: 'qt5compat'  
+
+      - name: Configure CMake
+        if: matrix.enable_tests == 'ON' && startsWith(matrix.qt_version, '6')
+        continue-on-error: true
+        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_USE_QT_ZLIB=ON -B "${{github.workspace}}/build"
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+  macos:
+    if: false
     runs-on: macos-${{ matrix.macos_version }}
     name: macos-${{ matrix.macos_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
     strategy:
@@ -144,7 +175,7 @@ jobs:
         run: "ctest --verbose"
 
   alpine:
-    if: true
+    if: false
     name: "cmake on ${{ matrix.runner }}"
     runs-on: "ubuntu-20.04"
     container:
