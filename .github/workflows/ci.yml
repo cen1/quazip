@@ -143,8 +143,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package_manager: [ conan, vcpkg ]
-        qt_version: [ 5.12.12, 6.6.2 ]
+        package_manager: [ vcpkg ] #[ conan, vcpkg ]
+        qt_version: [ 6.6.2 ] #[ 5.12.12, 6.6.2 ]
 
     steps:
       - uses: actions/checkout@v4

@@ -29,16 +29,13 @@ target_link_libraries(qztest
     QuaZip::QuaZip
 )
 
-add_test(NAME qztest_test
-	COMMAND qztest
-	WORKING_DIRECTORY ${QUAZIP_BINARY_DIR}/quazip # preliminary hack to find the dll on windows
-)
+add_test(NAME qztest_test COMMAND qztest)
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --verbose DEPENDS qztest)
 
 # Copy all Qt dlls to qztest bin so we can run it in CI
 if (WIN32)
 	install(FILES $<TARGET_RUNTIME_DLLS:qztest> TYPE BIN)
-
+	
 	message(STATUS "Setting up windeployqt")
 	set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 	include(windeployqt)
