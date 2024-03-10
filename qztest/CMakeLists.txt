@@ -35,7 +35,21 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --verbose DEPENDS qztest)
 # Copy all Qt dlls to qztest bin so we can run it in CI
 if (WIN32)
 	install(FILES $<TARGET_RUNTIME_DLLS:qztest> TYPE BIN)
-	
+
+	message(STATUS "QUAZIP_BINARY_DIR is ${QUAZIP_BINARY_DIR}")
+	add_custom_command(TARGET qztest POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:quazip> $<TARGET_FILE_DIR:qztest>
+			COMMAND_EXPAND_LISTS
+	)
+
+	if (DEFINED VCPKG_INSTALLED_DIR)
+		message(STATUS "Copy .dll from vcpkg")
+		add_custom_command(TARGET qztest POST_BUILD
+				COMMAND ${CMAKE_COMMAND} -E copy "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin/bz2.dll" $<TARGET_FILE_DIR:qztest>
+				COMMAND_EXPAND_LISTS
+		)
+	endif()
+
 	message(STATUS "Setting up windeployqt")
 	set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 	include(windeployqt)
