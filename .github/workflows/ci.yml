@@ -178,7 +178,7 @@ jobs:
 
       - name: Init conan
         if: matrix.package_manager == 'conan'
-        run: conan profile detect
+        run: conan profile detect --force
 
       - name: Install dependencies with conan
         if: matrix.package_manager == 'conan'
