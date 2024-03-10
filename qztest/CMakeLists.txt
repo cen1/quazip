@@ -37,6 +37,8 @@ add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} --verbose DEPENDS qztest)
 
 # Copy all Qt dlls to qztest bin so we can run it in CI
 if (WIN32)
+	install(FILES $<TARGET_RUNTIME_DLLS:qztest> TYPE BIN)
+
 	message(STATUS "Setting up windeployqt")
 	set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 	include(windeployqt)
