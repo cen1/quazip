@@ -102,7 +102,7 @@ jobs:
   use-qt-zlib-windows:
     if: true
     runs-on: windows-latest
-    name: Qt-${{ matrix.qt_version }}-tests-${{ matrix.enable_tests }}
+    name: use-qt-zlib-windows-${{ matrix.qt_version }}
     strategy:
       fail-fast: false
       matrix:
@@ -120,10 +120,9 @@ jobs:
           cache: 'true'
           cache-key-prefix: ${{ runner.os }}-Qt-Cache-${{ matrix.qt_version }}
           dir: ${{ github.workspace }}/Qt
-          modules: 'qt5compat'  
+          modules: 'qt5compat'
 
       - name: Configure CMake
-        if: matrix.enable_tests == 'ON' && startsWith(matrix.qt_version, '6')
         continue-on-error: true
         run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=ON -DQUAZIP_USE_QT_ZLIB=ON -B "${{github.workspace}}/build"
 
