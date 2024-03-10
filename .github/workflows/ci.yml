@@ -143,8 +143,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package_manager: [ conan, vcpkg ]
-        qt_version: [ 6.6.2 ]
+        package_manager: [ vcpkg ]
+        qt_version: [ 5.12.12, 6.4.0, 6.6.2 ]
 
     steps:
       - uses: actions/checkout@v4
@@ -177,7 +177,7 @@ jobs:
 
       - name: Configure
         shell: cmd
-        run: cmake --preset ${{ matrix.package_manager }} -DQUAZIP_ENABLE_TESTS=ON
+        run: cmake --preset ${{ matrix.package_manager }} -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=ON
 
       - name: Build
         shell: cmd
