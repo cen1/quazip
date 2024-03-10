@@ -78,10 +78,11 @@ if(QUAZIP_QT_MAJOR_VERSION EQUAL 6)
   # Name of the Zlib component appears to be ZlibPrivate, tested Qt versions 6.3.1 to 6.6.2
   # BundledZLIB fails with: Failed to find Qt component "BundledZLIB". Expected Config file at
   # "/path/to/Qt6/qtbase/lib/cmake/Qt6BundledZLIB/Qt6BundledZLIBConfig.cmake" does NOT exist
-  if((Qt6_VERSION VERSION_GREATER_EQUAL "6.3.1"))
-    set(QUAZIP_QT_ZLIB_COMPONENT ZlibPrivate)
-    # ZlibPrivate seems to expose headers only so tests fail to link.
-    set(QUAZIP_QT_ZLIB_COMPONENT_INCOMPATIBLE_TESTS ON)
+  # Name of the Zlib component has been changed in 6.3.1, and again in 6.6.1...
+  if((Qt6_VERSION VERSION_GREATER_EQUAL "6.3.1") AND (Qt6_VERSION VERSION_LESS "6.6.1"))
+      set(QUAZIP_QT_ZLIB_COMPONENT BundledZLIB)
+  elseif(Qt6_VERSION VERSION_GREATER_EQUAL "6.6.1")
+      set(QUAZIP_QT_ZLIB_COMPONENT ZlibPrivate)
   else()
     set(QUAZIP_QT_ZLIB_COMPONENT Zlib)
   endif()
