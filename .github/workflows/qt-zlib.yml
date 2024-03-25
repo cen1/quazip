@@ -163,7 +163,6 @@ jobs:
           key: windows-qt-${{ matrix.qt_version }}
 
       - name: Install Qt
-        if: steps.cache-qt-restore.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: qt-everywhere-src-${{ matrix.qt_version }}
         run: cmake --install .
