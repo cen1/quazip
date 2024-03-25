@@ -151,7 +151,8 @@ jobs:
       - name: Build Qt
         if: steps.cache-qt-restore.outputs.cache-hit != 'true'
         shell: cmd
-        run: cmake --build . --config Release
+        working-directory: qt-everywhere-src-${{ matrix.qt_version }}
+        run: cmake --build . --parallel
 
       - name: Cache Qt
         if: steps.cache-qt-restore.outputs.cache-hit != 'true'
@@ -160,6 +161,12 @@ jobs:
         with:
           path: qt-everywhere-src-${{ matrix.qt_version }}
           key: windows-qt-${{ matrix.qt_version }}
+
+      - name: Install Qt
+        if: steps.cache-qt-restore.outputs.cache-hit != 'true'
+        shell: cmd
+        working-directory: qt-everywhere-src-${{ matrix.qt_version }}
+        run: cmake --install .
 
       - name: Checkout
         uses: actions/checkout@v4
