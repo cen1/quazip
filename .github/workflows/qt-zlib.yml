@@ -39,7 +39,7 @@ jobs:
   use-qt6-zlib-windows:
     if: true
     runs-on: windows-latest
-    name: use-qt-zlib-windows-${{ matrix.qt_version }}
+    name: use-qt6-zlib-windows-${{ matrix.qt_version }}
     strategy:
       fail-fast: false
       matrix:
@@ -83,14 +83,14 @@ jobs:
         if: steps.cache-qt-restore.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          unzip -q qt-everywhere-src-6.6.2.zip
+          unzip -q qt-everywhere-src-${{ matrix.qt_version }}.zip
           ls -la
 
       - name: Configure Qt
         if: steps.cache-qt-restore.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: qt-everywhere-src-${{ matrix.qt_version }}
-        run: ./configure.bat -prefix="${{github.workspace}}/Qt" -qt-zlib \
+        run: ./configure.bat -prefix "${{github.workspace}}/Qt" -qt-zlib \
           -static \
           -opensource \
           -confirm-license \
