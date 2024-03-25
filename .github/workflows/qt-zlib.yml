@@ -172,7 +172,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Configure CMake
-        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=OFF -DQUAZIP_USE_QT_ZLIB=ON -B "${{github.workspace}}/build" -DCMAKE_PREFIX_PATH="${{github.workspace}}/Qt"
+        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DQUAZIP_QT_MAJOR_VERSION=6 -DBUILD_SHARED_LIBS=OFF -DQUAZIP_USE_QT_ZLIB=ON -B "${{github.workspace}}/build" -DCMAKE_PREFIX_PATH="${{github.workspace}}\Qt"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
