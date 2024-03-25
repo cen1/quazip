@@ -7,7 +7,7 @@ RUN apt-get -y update && apt-get -y install build-essential cmake tar wget pytho
 RUN wget -qO- https://ftp.fau.de/qtproject/archive/qt/5.15/5.15.12/single/qt-everywhere-opensource-src-5.15.12.tar.xz | tar xJ
 
 RUN qt-everywhere-src-5.15.12/configure -qt-zlib \
--shared \
+-static \
 -opensource \
 -confirm-license \
 -optimize-size \
