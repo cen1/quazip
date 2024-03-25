@@ -95,7 +95,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        qt_version: [ 5.12.12, 6.6.2 ]
+        qt_version: [ 5.15.13, 6.6.2 ]
 
     steps:
       - name: Checkout
@@ -124,7 +124,7 @@ jobs:
         if: steps.cache-qt-restore.outputs.cache-hit != 'true' && startsWith(matrix.qt_version, '5.')
         shell: powershell
         run: |
-          Invoke-WebRequest -Uri https://ftp.fau.de/qtproject/archive/qt/5.12/${{ matrix.qt_version }}/single/qt-everywhere-src-${{ matrix.qt_version }}.zip -OutFile qt-everywhere-src-${{ matrix.qt_version }}.zip;
+          Invoke-WebRequest -Uri https://ftp.fau.de/qtproject/archive/qt/5.15/${{ matrix.qt_version }}/single/qt-everywhere-src-${{ matrix.qt_version }}.zip -OutFile qt-everywhere-src-${{ matrix.qt_version }}.zip;
           Expand-Archive qt-everywhere-src-${{ matrix.qt_version }}.zip -DestinationPath . ;
           Remove-Item qt-everywhere-src-${{ matrix.qt_version }}.zip
 
