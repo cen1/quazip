@@ -15,7 +15,7 @@ jobs:
   use-qt-zlib-ubuntu:
     if: true
     runs-on: ubuntu-22.04
-    name: Qt-${{ matrix.qt_version }}-tests
+    name: use-qt-zlib-ubuntu-${{ matrix.qt_version }}
     container: ghcr.io/cen1/qt:${{ matrix.qt_version }}
     strategy:
       fail-fast: false
@@ -69,7 +69,7 @@ jobs:
           path: qt-everywhere-src-${{ matrix.qt_version }}.zip
 
       - name: Download Qt 6
-        if: steps.cache-qt-restore.outputs.cache-hit != 'true' && steps.cache-qt-zip-restore.outputs.cache-hit != 'true' && startsWith(matrix.qt_version, '6.')
+        if: steps.cache-qt-restore.outputs.cache-hit != 'true' && steps.cache-qt-zip-restore.outputs.cache-hit != 'true'
         shell: bash
         run: |
           curl https://ftp.fau.de/qtproject/archive/qt/6.6/${{ matrix.qt_version }}/single/qt-everywhere-src-${{ matrix.qt_version }}.zip --output qt-everywhere-src-${{ matrix.qt_version }}.zip
@@ -213,7 +213,7 @@ jobs:
           path: qt-everywhere-src-${{ matrix.qt_version }}.zip
 
       - name: Download Qt 5
-        if: steps.cache-qt-restore.outputs.cache-hit != 'true' && steps.cache-qt-zip-restore.outputs.cache-hit != 'true' && startsWith(matrix.qt_version, '6.')
+        if: steps.cache-qt-restore.outputs.cache-hit != 'true' && steps.cache-qt-zip-restore.outputs.cache-hit != 'true'
         shell: bash
         run: |
           curl https://ftp.fau.de/qtproject/archive/qt/5.15/${{ matrix.qt_version }}/single/qt-everywhere-opensource-src-${{ matrix.qt_version }}.zip --output qt-everywhere-src-${{ matrix.qt_version }}.zip
