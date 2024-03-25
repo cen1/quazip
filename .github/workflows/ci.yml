@@ -119,9 +119,10 @@ jobs:
 
       - name: Download Qt 6
         if: steps.cache-qt-restore.outputs.cache-hit != 'true' && steps.cache-qt-zip-restore.outputs.cache-hit != 'true' && startsWith(matrix.qt_version, '6.')
-        shell: powershell
+        shell: bash
         run: |
-          Invoke-WebRequest -Uri https://ftp.fau.de/qtproject/archive/qt/6.6/${{ matrix.qt_version }}/single/qt-everywhere-src-${{ matrix.qt_version }}.zip -OutFile qt-everywhere-src-${{ matrix.qt_version }}.zip;
+          curl https://ftp.fau.de/qtproject/archive/qt/6.6/${{ matrix.qt_version }}/single/qt-everywhere-src-${{ matrix.qt_version }}.zip --output qt-everywhere-src-6.6.2.zip
+          unzip qt-everywhere-src-6.6.2.zip
 
       - name: Save Qt zip
         if: steps.cache-qt-restore.outputs.cache-hit != 'true' && steps.cache-qt-zip-restore.outputs.cache-hit != 'true'
