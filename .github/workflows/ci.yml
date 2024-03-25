@@ -124,9 +124,9 @@ jobs:
         if: steps.cache-qt-restore.outputs.cache-hit != 'true' && startsWith(matrix.qt_version, '5.')
         shell: powershell
         run: |
-          Invoke-WebRequest -Uri https://ftp.fau.de/qtproject/archive/qt/5.15/${{ matrix.qt_version }}/single/qt-everywhere-src-${{ matrix.qt_version }}.zip -OutFile qt-everywhere-src-${{ matrix.qt_version }}.zip;
-          Expand-Archive qt-everywhere-src-${{ matrix.qt_version }}.zip -DestinationPath . ;
-          Remove-Item qt-everywhere-src-${{ matrix.qt_version }}.zip
+          Invoke-WebRequest -Uri https://ftp.fau.de/qtproject/archive/qt/5.15/${{ matrix.qt_version }}/single/qt-everywhere-opensource-src-${{ matrix.qt_version }}.zip -OutFile qt-everywhere-src-${{ matrix.qt_version }}.zip;
+          Expand-Archive qt-everywhere-opensource-src-${{ matrix.qt_version }}.zip -DestinationPath . ;
+          Remove-Item qt-everywhere-opensource-src-${{ matrix.qt_version }}.zip
 
       - name: Configure Qt
         shell: cmd
