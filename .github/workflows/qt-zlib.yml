@@ -189,7 +189,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        qt_version: [ 5.15.13 ]
+        qt_version: [ 5.15.12 ]
 
     steps:
       - name: Checkout
