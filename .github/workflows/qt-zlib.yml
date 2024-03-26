@@ -185,7 +185,7 @@ jobs:
   use-qt5-zlib-windows:
     if: true
     runs-on: windows-latest
-    name: use-qt6-zlib-windows-${{ matrix.qt_version }}
+    name: use-qt5-zlib-windows-${{ matrix.qt_version }}
     strategy:
       fail-fast: false
       matrix:
@@ -247,7 +247,6 @@ jobs:
           -nomake examples \
           -nomake tests \
           -no-dbus \
-          -no-icu \
           -no-fontconfig \
           -no-opengl \
           -no-openssl \

@@ -14,7 +14,6 @@ RUN qt-everywhere-src-5.15.12/configure -qt-zlib \
 -nomake examples \
 -nomake tests \
 -no-dbus \
--no-icu \
 -no-fontconfig \
 -no-opengl \
 -no-openssl \

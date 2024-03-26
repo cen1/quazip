@@ -14,7 +14,6 @@ RUN qt-everywhere-src-6.4.3/configure -qt-zlib \
 -nomake examples \
 -nomake tests \
 -no-dbus \
--no-icu \
 -no-fontconfig \
 -no-opengl \
 -no-openssl \
