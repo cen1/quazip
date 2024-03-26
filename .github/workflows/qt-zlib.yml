@@ -5,7 +5,7 @@ on:
       - feature/*
   pull_request:
 
-name: CI
+name: qt-zlib
 
 env:
   BUILD_TYPE: Release
