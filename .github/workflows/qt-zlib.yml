@@ -239,53 +239,53 @@ jobs:
         if: steps.cache-qt-restore.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: qt-everywhere-src-${{ matrix.qt_version }}
-        run: ./configure.bat -prefix "${{github.workspace}}/Qt" -qt-zlib \
-          -static \
-          -opensource \
-          -confirm-license \
-          -optimize-size \
-          -nomake examples \
-          -nomake tests \
-          -no-dbus \
-          -no-fontconfig \
-          -no-opengl \
-          -no-openssl \
-          -no-gui \
-          -skip qtconnectivity \
-          -skip qtdatavis3d \
-          -skip qtdeclarative \
-          -skip qtdoc \
-          -skip qtactiveqt \
-          -skip qt3d \
-          -skip qtimageformats \
-          -skip qtlocation \
-          -skip qtmultimedia \
-          -skip qtopcua \
-          -skip qtremoteobjects \
-          -skip qtscxml \
-          -skip qtsensors \
-          -skip qtserialbus \
-          -skip qtserialport \
-          -skip qtspeech \
-          -skip qtsvg \
-          -skip qttools \
-          -skip qttranslations \
-          -skip qtwebchannel \
-          -skip qtwebengine \
-          -skip qtwebsockets \
-          -skip qtwebview \
-          -skip qtcharts \
-          -skip qtcoap \
-          -skip qtlottie \
-          -skip qtmqtt \
-          -skip qtnetworkauth \
-          -skip qtquick3d \
-          -skip qtquicktimeline \
-          -skip qtvirtualkeyboard \
-          -skip qtwayland \
-          -skip qtcanvas3d \
-          -skip qtgamepad \
-          -skip qtpurchasing \
+        run: ./configure.bat -prefix "${{github.workspace}}/Qt" -qt-zlib ^
+          -static ^
+          -opensource ^
+          -confirm-license ^
+          -optimize-size ^
+          -nomake examples ^
+          -nomake tests ^
+          -no-dbus ^
+          -no-fontconfig ^
+          -no-opengl ^
+          -no-openssl ^
+          -no-gui ^
+          -skip qtconnectivity ^
+          -skip qtdatavis3d ^
+          -skip qtdeclarative ^
+          -skip qtdoc ^
+          -skip qtactiveqt ^
+          -skip qt3d ^
+          -skip qtimageformats ^
+          -skip qtlocation ^
+          -skip qtmultimedia ^
+          -skip qtopcua ^
+          -skip qtremoteobjects ^
+          -skip qtscxml ^
+          -skip qtsensors ^
+          -skip qtserialbus ^
+          -skip qtserialport ^
+          -skip qtspeech ^
+          -skip qtsvg ^
+          -skip qttools ^
+          -skip qttranslations ^
+          -skip qtwebchannel ^
+          -skip qtwebengine ^
+          -skip qtwebsockets ^
+          -skip qtwebview ^
+          -skip qtcharts ^
+          -skip qtcoap ^
+          -skip qtlottie ^
+          -skip qtmqtt ^
+          -skip qtnetworkauth ^
+          -skip qtquick3d ^
+          -skip qtquicktimeline ^
+          -skip qtvirtualkeyboard ^
+          -skip qtwayland ^
+          -skip qtcanvas3d ^
+          -skip qtgamepad ^
+          -skip qtpurchasing ^
           -skip qtscript
 
       - name: Build Qt
