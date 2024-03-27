@@ -288,11 +288,16 @@ jobs:
           -skip qtpurchasing ^
           -skip qtscript
 
+      - name: Debug
+        shell: bash
+        working-directory: qt-everywhere-src-${{ matrix.qt_version }}
+        run: ls -la
+
       - name: Build Qt
         if: steps.cache-qt-restore.outputs.cache-hit != 'true'
         shell: cmd
         working-directory: qt-everywhere-src-${{ matrix.qt_version }}
-        run: cmake --build . --parallel
+        run: nmake
 
       - name: Cache Qt
         if: steps.cache-qt-restore.outputs.cache-hit != 'true'
@@ -305,7 +310,7 @@ jobs:
       - name: Install Qt
         shell: cmd
         working-directory: qt-everywhere-src-${{ matrix.qt_version }}
-        run: cmake --install .
+        run: nmake install
 
       - name: Configure CMake
         run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DQUAZIP_QT_MAJOR_VERSION=5 -DBUILD_SHARED_LIBS=OFF -DQUAZIP_ENABLE_TESTS=ON -DQUAZIP_USE_QT_ZLIB=ON -B build -DCMAKE_PREFIX_PATH="${{github.workspace}}\Qt"
