@@ -34,7 +34,7 @@ jobs:
 
       - name: Run tests
         working-directory: build
-        run: "ctest --verbose"
+        run: ctest --verbose -C Release
 
   use-qt6-zlib-windows:
     if: true
