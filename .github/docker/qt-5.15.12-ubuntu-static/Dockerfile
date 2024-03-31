@@ -59,6 +59,9 @@ RUN make -j$(nproc) && make install
 
 FROM ubuntu:22.04
 
-RUN apt-get -y update && apt-get -y install build-essential cmake
+RUN apt-get -y update && apt-get -y install git build-essential cmake
 
 COPY --from=builder /usr/local/Qt-5.15.12 /usr/local/Qt-5.15.12
+
+# Temporary workaround for https://github.com/stachenov/quazip/issues/127
+ENV LC_ALL=C.UTF-8
