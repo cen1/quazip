@@ -54,31 +54,42 @@ set(QUAZIP_INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake)
 set(QUAZIP_PKGCONFIG_NAME
     quazip${QuaZip_VERSION_MAJOR}-qt${QUAZIP_QT_MAJOR_VERSION})
 
-add_library(${QUAZIP_LIB_TARGET_NAME}_object OBJECT ${QUAZIP_SOURCES})
+function(quazip_compile libname)
+    target_include_directories(${libname} PRIVATE ${QUAZIP_INC})
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(${libname} PRIVATE -Wshadow -Werror=shadow)
+    endif()
+endfunction()
 
-target_include_directories(${QUAZIP_LIB_TARGET_NAME}_object
-    PRIVATE
-        $<BUILD_INTERFACE:${QUAZIP_INC}>
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
-
-target_link_libraries(${QUAZIP_LIB_TARGET_NAME}_object
-    PUBLIC ${QUAZIP_LIB_LIBRARIES} ${QUAZIP_LIB})
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(${QUAZIP_LIB_TARGET_NAME}_object
-        PRIVATE -Wshadow -Werror=shadow)
-endif()
-
-# don't dllexport unless building shared
-if(NOT QUAZIP_BUILD_SHARED)
+# Default: each library compiles its own sources with its own export settings.
+set(QUAZIP_BUILD_SOURCES ${QUAZIP_SOURCES})
+set(QUAZIP_USING_OBJECTS OFF)
+if(QUAZIP_REUSE_OBJECTS AND QUAZIP_BUILD_SHARED AND QUAZIP_BUILD_STATIC)
+    # Opt-in: compile once and reuse the objects for both libraries.
+    # The static archive will also contain shared-library export annotations.
+    set(QUAZIP_USING_OBJECTS ON)
+    add_library(${QUAZIP_LIB_TARGET_NAME}_object OBJECT ${QUAZIP_SOURCES})
+    quazip_compile(${QUAZIP_LIB_TARGET_NAME}_object)
+    target_include_directories(${QUAZIP_LIB_TARGET_NAME}_object PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR})
+    target_link_libraries(${QUAZIP_LIB_TARGET_NAME}_object
+        PUBLIC ${QUAZIP_LIB_LIBRARIES} ${QUAZIP_LIB})
     target_compile_definitions(${QUAZIP_LIB_TARGET_NAME}_object
-        PRIVATE QUAZIP_STATIC)
+        PRIVATE QUAZIP_BUILD)
+    set_property(TARGET ${QUAZIP_LIB_TARGET_NAME}_object
+        PROPERTY POSITION_INDEPENDENT_CODE ON)
+    set(QUAZIP_BUILD_SOURCES
+        $<TARGET_OBJECTS:${QUAZIP_LIB_TARGET_NAME}_object>)
+elseif(QUAZIP_REUSE_OBJECTS)
+    message(STATUS "QUAZIP_REUSE_OBJECTS is ignored: requires both QUAZIP_BUILD_SHARED=ON and QUAZIP_BUILD_STATIC=ON")
 endif()
 
 # commonalities between shared and static
 macro(quazip_lib libname)
+    if(NOT QUAZIP_USING_OBJECTS)
+        quazip_compile(${libname})
+    endif()
     target_include_directories(${libname} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
@@ -98,17 +109,10 @@ endmacro()
 ## SHARED ##
 if(QUAZIP_BUILD_SHARED)
     set(libname ${QUAZIP_LIB_TARGET_NAME}_shared)
-    add_library(${libname} SHARED
-        $<TARGET_OBJECTS:${QUAZIP_LIB_TARGET_NAME}_object>)
-
-    # shared libs require PIC
-    set_property(TARGET ${QUAZIP_LIB_TARGET_NAME}_object
-        PROPERTY POSITION_INDEPENDENT_CODE ON)
+    add_library(${libname} SHARED ${QUAZIP_BUILD_SOURCES})
 
     # always export symbols when building a shared lib
     target_compile_definitions(${libname} PRIVATE QUAZIP_BUILD)
-    target_compile_definitions(${QUAZIP_LIB_TARGET_NAME}_object
-        PRIVATE QUAZIP_BUILD)
 
     set_target_properties(${libname} PROPERTIES
         VERSION ${QUAZIP_LIB_VERSION}
@@ -125,8 +129,7 @@ endif()
 ## STATIC ##
 if(QUAZIP_BUILD_STATIC)
     set(libname ${QUAZIP_LIB_TARGET_NAME}_static)
-    add_library(${libname} STATIC
-        $<TARGET_OBJECTS:${QUAZIP_LIB_TARGET_NAME}_object>)
+    add_library(${libname} STATIC ${QUAZIP_BUILD_SOURCES})
 
     # consumers should not dllimport
     target_compile_definitions(${libname} PUBLIC QUAZIP_STATIC)

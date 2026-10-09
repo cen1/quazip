@@ -41,6 +41,8 @@ cmake_dependent_option(QUAZIP_BUILD_SHARED "Build QuaZip as a shared library"
     ${BUILD_SHARED_LIBS} "NOT EMSCRIPTEN" OFF)
 cmake_dependent_option(QUAZIP_BUILD_STATIC "Build QuaZip as a static library"
     ${static_default} "NOT EMSCRIPTEN" ON)
+option(QUAZIP_REUSE_OBJECTS
+    "Reuse shared-library objects for static output when building both variants" OFF)
 
 # avoid conflict b/t dll import lib and static lib on MSVC
 if(CMAKE_STATIC_LIBRARY_PREFIX STREQUAL "" AND
