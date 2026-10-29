@@ -78,7 +78,7 @@ if(QUAZIP_QT_MAJOR_VERSION EQUAL 6)
     find_package(Qt6 REQUIRED COMPONENTS Core 
             OPTIONAL_COMPONENTS Network Test)
     message(STATUS "Found Qt version ${Qt6_VERSION} at ${Qt6_DIR}")
-    set(QUAZIP_QT_ZLIB_COMPONENT BundledZLIB)
+    set(QUAZIP_QT_ZLIB_COMPONENT ZlibPrivate)
     set(QUAZIP_QT_ZLIB_HEADER_COMPONENT ZlibPrivate)
     set(QUAZIP_LIB_LIBRARIES Qt6::Core )
     set(QUAZIP_TEST_QT_LIBRARIES Qt6::Core Qt6::Network Qt6::Test)
@@ -120,7 +120,7 @@ if(QUAZIP_USE_QT_ZLIB)
     endif()
 endif()
 
-if(QUAZIP_QT_ZLIB_USED AND QUAZIP_QT_ZLIB_COMPONENT STREQUAL BundledZLIB)
+if(QUAZIP_QT_ZLIB_USED AND QUAZIP_QT_ZLIB_COMPONENT STREQUAL ZlibPrivate)
   # Qt's new BundledZLIB uses z-prefix in zlib
   add_compile_definitions(Z_PREFIX)
 endif()
