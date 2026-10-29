@@ -48,6 +48,14 @@ on:
         required: false
         default: "with_flag"
         type: string
+      shared:
+        required: false
+        default: "ON"
+        type: string
+      qt_zlib:
+        required: false
+        default: "OFF"
+        type: string
     secrets:
       GH_TOKEN:
         required: false
@@ -60,7 +68,7 @@ env:
 jobs:
   build:
     runs-on: ${{ inputs.runner }}
-    name: Windows-${{ inputs.arch }}-Qt-${{ inputs.qt_version }}-Preset-${{ inputs.preset }}
+    name: Windows-${{ inputs.arch }}-Qt-${{ inputs.qt_version }}-Preset-${{ inputs.preset }}-shared-${{ inputs.shared }}-qtzlib-${{ inputs.qt_zlib }}
     steps:
       - uses: actions/checkout@v6
 
@@ -104,7 +112,7 @@ jobs:
 
       - name: Configure
         shell: cmd
-        run: cmake --preset ${{ inputs.preset }} -DQUAZIP_ENABLE_TESTS=ON
+        run: cmake --preset ${{ inputs.preset }} -DQUAZIP_ENABLE_TESTS=ON -DBUILD_SHARED_LIBS=${{ inputs.shared }} -DQUAZIP_USE_QT_ZLIB=${{ inputs.qt_zlib }}
 
       - name: Build
         shell: cmd
@@ -116,6 +124,7 @@ jobs:
         run: cmake --build ${{github.workspace}}/build --config Release
 
       - name: Check PE
+        if: inputs.shared == 'ON'
         shell: bash
         working-directory: ./build/quazip/Release
         run: |
@@ -148,7 +157,7 @@ jobs:
         with:
           retention-days: 1
           overwrite: true
-          name: "${{ inputs.runs_on }}_${{ inputs.preset }}_qt${{ inputs.qt_version }}_shared${{ inputs.shared }}_cp"
+          name: "${{ inputs.runs_on }}_${{ inputs.preset }}_qt${{ inputs.qt_version }}_shared${{ inputs.shared }}_qtzlib${{ inputs.qt_zlib }}_cp"
           path: build/quazip/cp.zip
 
       - name: Download bundle containing cp.zip

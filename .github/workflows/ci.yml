@@ -11,19 +11,24 @@ permissions: read-all
 jobs:
   ubuntu:
     if: true
-    name: Ubuntu-${{ matrix.os_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
+    name: Ubuntu-${{ matrix.os_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}-qtzlib-${{ matrix.qt_zlib }}
     strategy:
       fail-fast: false
       matrix:
         os_version: [22.04, 24.04]
         qt_version: [5.15.2, 6.8.2]
         shared: [ON, OFF]
+        qt_zlib: [ON, OFF]
+        exclude:
+          - shared: ON
+            qt_zlib: ON #Qt zlib is only supported for static quazip
     uses: ./.github/workflows/reusable.yml
     with:
         runs_on: ubuntu-${{ matrix.os_version }}
         os_version: ${{ matrix.os_version }}
         qt_version: ${{ matrix.qt_version }}
         shared: ${{ matrix.shared }}
+        qt_zlib: ${{ matrix.qt_zlib }}
 
   ubuntu-zlibconst:
     if: true
@@ -60,24 +65,28 @@ jobs:
 
   macos:
     if: true
-    name: macos-${{ matrix.os_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}
+    name: macos-${{ matrix.os_version }}-Qt-${{ matrix.qt_version }}-shared-${{ matrix.shared }}-qtzlib-${{ matrix.qt_zlib }}
     strategy:
       fail-fast: false
       matrix:
         os_version: [15, 14, 15-intel]
         qt_version: [6.8.2, 5.15.2]
         shared: [ON, OFF]
+        qt_zlib: [ON, OFF]
         exclude:
           - os_version: 14
             qt_version: 5.15.2 #Not available due to ARM arch
           - os_version: 15
             qt_version: 5.15.2 #Not available due to ARM arch
+          - shared: ON
+            qt_zlib: ON #Qt zlib is only supported for static quazip
     uses: ./.github/workflows/reusable.yml
     with:
       runs_on: macos-${{ matrix.os_version }}
       os_version: ${{ matrix.os_version }}
       qt_version: ${{ matrix.qt_version }}
       shared: ${{ matrix.shared }}
+      qt_zlib: ${{ matrix.qt_zlib }}
 
   alpine:
     if: true
@@ -117,12 +126,13 @@ jobs:
 
   windows-x64:
     if: true
-    name: Win-Qt-${{ matrix.qt_version }}-preset-${{ matrix.preset }}
+    name: Win-Qt-${{ matrix.qt_version }}-preset-${{ matrix.preset }}-qtzlib-${{ matrix.qt_zlib }}
     strategy:
       fail-fast: false
       matrix:
         preset: [ conan, vcpkg ]
         qt_version: [ 5.15.2, 6.8.2 ]
+        qt_zlib: [ON, OFF]
     uses: ./.github/workflows/reusable-win.yml
     with:
       runs_on: "win-x64"
@@ -131,6 +141,8 @@ jobs:
       qt_version: ${{ matrix.qt_version }}
       preset: ${{ matrix.preset }}
       pe_str: "x86-64"
+      shared: ${{ matrix.qt_zlib == 'ON' && 'OFF' || 'ON' }} #Qt zlib is only supported for static quazip
+      qt_zlib: ${{ matrix.qt_zlib }}
 
   windows-x86:
     if: true

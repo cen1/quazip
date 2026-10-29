@@ -34,6 +34,10 @@ on:
         required: false
         default: false
         type: boolean
+      qt_zlib:
+        required: false
+        default: "OFF"
+        type: string
     secrets:
         GH_TOKEN:
             required: false
@@ -46,7 +50,7 @@ env:
 jobs:
   build:
     runs-on:  ${{ inputs.runs_on }}
-    name: Build-${{ inputs.runs_on }}-Qt-${{ inputs.qt_version }}-shared-${{ inputs.shared }}
+    name: Build-${{ inputs.runs_on }}-Qt-${{ inputs.qt_version }}-shared-${{ inputs.shared }}-qtzlib-${{ inputs.qt_zlib }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -78,7 +82,7 @@ jobs:
           zlib1g-dev libbz2-dev
 
       - name: Configure CMake
-        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=${{ inputs.shared }} -DQUAZIP_ENABLE_TESTS=ON -DZLIB_CONST=${{ inputs.zlib_const }} -DQUAZIP_ENABLE_QTEXTCODEC=${{ inputs.qtextcodec }} -B "${{github.workspace}}/build"
+        run: cmake -DCMAKE_BUILD_TYPE="${{env.BUILD_TYPE}}" -DBUILD_SHARED_LIBS=${{ inputs.shared }} -DQUAZIP_ENABLE_TESTS=ON -DZLIB_CONST=${{ inputs.zlib_const }} -DQUAZIP_USE_QT_ZLIB=${{ inputs.qt_zlib }} -DQUAZIP_ENABLE_QTEXTCODEC=${{ inputs.qtextcodec }} -B "${{github.workspace}}/build"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
@@ -101,7 +105,7 @@ jobs:
         with:
           retention-days: 1
           overwrite: true
-          name: "${{ inputs.runs_on }}_qt${{ inputs.qt_version }}_shared${{ inputs.shared }}_cp"
+          name: "${{ inputs.runs_on }}_qt${{ inputs.qt_version }}_shared${{ inputs.shared }}_qtzlib${{ inputs.qt_zlib }}_cp"
           path: build/quazip/cp.zip
 
       - name: Download bundle containing cp.zip
