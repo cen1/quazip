@@ -23,12 +23,15 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 */
 
 #include "qztest.h"
+#include "quazip_config.h"
 #include "testjlcompress.h"
 #include "testjlcp_compress.h"
 #include "testjlcp_extract.h"
 #include "testquachecksum32.h"
 #include "testquacompress.h"
+#ifdef QUAZIP_GZIP
 #include "testquagzipfile.h"
+#endif
 #include "testquaziodevice.h"
 #include "testquazip.h"
 #include "testquazipdir.h"
@@ -363,10 +366,12 @@ int main(int argc, char **argv)
             TestQuaZIODevice testQuaZIODevice;
             err = qMax(err, QTest::qExec(&testQuaZIODevice, app.arguments()));
         }
+#ifdef QUAZIP_GZIP
         {
             TestQuaGzipFile testQuaGzipFile;
             err = qMax(err, QTest::qExec(&testQuaGzipFile, app.arguments()));
         }
+#endif
         {
             TestQuaZipNewInfo testQuaZipNewInfo;
             err = qMax(err, QTest::qExec(&testQuaZipNewInfo, app.arguments()));

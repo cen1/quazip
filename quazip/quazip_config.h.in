@@ -7,5 +7,6 @@
  */
 
 #cmakedefine QUAZIP_CAN_USE_QTEXTCODEC
+#cmakedefine QUAZIP_GZIP
 
 #endif // QUAZIP_CONFIG_H

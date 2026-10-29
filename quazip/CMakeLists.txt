@@ -14,7 +14,6 @@ set(QUAZIP_HEADERS
         quaadler32.h
         quachecksum32.h
         quacrc32.h
-        quagzipfile.h
         quaziodevice.h
         quazip.h
         quazip_global.h
@@ -40,7 +39,6 @@ set(QUAZIP_SOURCES
         quaadler32.cpp
         quachecksum32.cpp
         quacrc32.cpp
-        quagzipfile.cpp
         quaziodevice.cpp
         quazip.cpp
         quazip_textcodec.cpp
@@ -49,6 +47,11 @@ set(QUAZIP_SOURCES
         quazipfileinfo.cpp
         quazipnewinfo.cpp
    )
+
+if(QUAZIP_GZIP)
+    list(APPEND QUAZIP_HEADERS quagzipfile.h)
+    list(APPEND QUAZIP_SOURCES quagzipfile.h quagzipfile.cpp)
+endif()
 
 set(QUAZIP_INCLUDE_PATH ${QUAZIP_DIR_NAME}/quazip)
 set(QUAZIP_INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake)

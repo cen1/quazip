@@ -107,7 +107,7 @@ if(QUAZIP_USE_QT_ZLIB)
     else()
         set(QUAZIP_QT_ZLIB_HEADER_COMPONENT_FOUND ON)
     endif()
-    if(QUAZIP_QT_ZLIB_COMPONENT_FOUND AND QUAZIP_QT_ZLIB_HEADER_COMPONENT_FOUND)
+    if(${QUAZIP_QT_ZLIB_COMPONENT_FOUND} AND ${QUAZIP_QT_ZLIB_HEADER_COMPONENT_FOUND})
         message(STATUS "Qt component ${QUAZIP_QT_ZLIB_COMPONENT} found")
         set(QUAZIP_LIB_LIBRARIES ${QUAZIP_LIB_LIBRARIES} Qt${QUAZIP_QT_MAJOR_VERSION}::${QUAZIP_QT_ZLIB_COMPONENT})
         if(DEFINED QUAZIP_QT_ZLIB_HEADER_COMPONENT)
@@ -121,8 +121,22 @@ if(QUAZIP_USE_QT_ZLIB)
 endif()
 
 if(QUAZIP_QT_ZLIB_USED AND QUAZIP_QT_ZLIB_COMPONENT STREQUAL ZlibPrivate)
-  # Qt's new BundledZLIB uses z-prefix in zlib
+  # Qt6's bundled zlib uses z-prefix in zlib
   add_compile_definitions(Z_PREFIX)
+endif()
+
+# A shared Qt does not export the zlib gz* API, so QuaGzipFile can't be linked against it
+set(QUAZIP_GZIP ON)
+if(QUAZIP_QT_ZLIB_USED)
+    get_target_property(QUAZIP_QT_CORE_TYPE Qt${QUAZIP_QT_MAJOR_VERSION}::Core TYPE)
+    if(NOT QUAZIP_QT_CORE_TYPE STREQUAL STATIC_LIBRARY)
+        set(QUAZIP_GZIP OFF)
+    endif()
+endif()
+if(QUAZIP_GZIP)
+    message(STATUS "QuaGzipFile enabled")
+else()
+    message(STATUS "QuaGzipFile disabled")
 endif()
 
 if(NOT QUAZIP_QT_ZLIB_USED)
